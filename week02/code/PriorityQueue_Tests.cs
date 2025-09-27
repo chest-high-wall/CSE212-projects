@@ -4,9 +4,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [TestClass]
 public class PriorityQueueTests
 {
-    // Scenario: Enqueue 3 items with different priorities.
-    // Expected: Dequeue returns the highest priority value ("B").
-    // Defect(s) Found:
+    // Defect(s) Found: None in this case. Highest priority element was removed correctly.
+
     [TestMethod]
     public void Dequeue_Removes_HighestPriority()
     {
@@ -19,9 +18,10 @@ public class PriorityQueueTests
         Assert.AreEqual("B", first, "Should remove value with highest priority (5).");
     }
 
-    // Scenario: Two items share the highest priority; FIFO among ties.
-    // Expected: "A" dequeues before "C" because A was enqueued first.
-    // Defect(s) Found:
+    // Defect(s) Found: Tie-breaking was incorrect (LIFO/unstable order).
+    // The second dequeue returned A again instead of C (Expected C, Actual A).
+    // Root cause: selection logic didn’t use stable FIFO when priorities were equal.
+
     [TestMethod]
     public void Dequeue_Resolves_Ties_Using_FIFO()
     {
@@ -37,9 +37,9 @@ public class PriorityQueueTests
         Assert.AreEqual("C", second, "Then the next item with the same priority.");
     }
 
-    // Scenario: Enqueue low then high then mid priorities.
-    // Expected: Highest priority wins regardless of enqueue order.
-    // Defect(s) Found:
+    // Defect(s) Found: Highest-priority selection was wrong (Expected C, Actual B).
+    // Root cause: Dequeue logic was selecting by enqueue order instead of highest priority value.
+
     [TestMethod]
     public void Dequeue_Ignores_EnqueueOrder_When_PrioritiesDiffer()
     {
@@ -52,9 +52,8 @@ public class PriorityQueueTests
         Assert.AreEqual("C", first, "Priority should dominate enqueue order.");
     }
 
-    // Scenario: Dequeue on empty queue.
-    // Expected: InvalidOperationException with exact message "The queue is empty."
-    // Defect(s) Found:
+    // Defect(s) Found: None. Exception type and message matched exactly as required.
+
     [TestMethod]
     public void Dequeue_Empty_Throws_InvalidOperation_With_Message()
     {

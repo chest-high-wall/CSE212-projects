@@ -12,8 +12,14 @@ public class Node
     public void Insert(int value)
     {
         // TODO Start Problem 1
+        // Insert unique values only — duplicates will be ignored
 
-        if (value < Data)
+        if (value == Data)
+        {
+            // Duplicate value; do nothing to keep the tree unique
+            return;
+        }
+        else if (value < Data)
         {
             // Insert to the left
             if (Left is null)
@@ -34,12 +40,23 @@ public class Node
     public bool Contains(int value)
     {
         // TODO Start Problem 2
-        return false;
+        // Search recursively for a value in the BST
+        if (value == Data)
+            return true;
+
+        if (value < Data)
+            return Left is not null && Left.Contains(value);
+
+        // value > Data
+        return Right is not null && Right.Contains(value);
     }
 
     public int GetHeight()
     {
         // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+        // Height is 1 + max(leftHeight, rightHeight)
+        int leftHeight = (Left is null) ? 0 : Left.GetHeight();
+        int rightHeight = (Right is null) ? 0 : Right.GetHeight();
+        return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
